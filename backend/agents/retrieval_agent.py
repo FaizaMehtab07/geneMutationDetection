@@ -126,9 +126,12 @@ class RetrievalAgent:
         if position:
             # For substitutions, match exact position
             if mutation_type == 'substitution':
-                exact_matches = gene_data[
-                    (gene_data['mutation_type'] == 'substitution') &
-                    (gene_data['position'] == position)
+                # Convert position column to int for comparison
+                gene_data_copy = gene_data.copy()
+                gene_data_copy['position'] = pd.to_numeric(gene_data_copy['position'], errors='coerce')
+                exact_matches = gene_data_copy[
+                    (gene_data_copy['mutation_type'] == 'substitution') &
+                    (gene_data_copy['position'] == position)
                 ]
                 matches.extend(exact_matches.to_dict('records'))
             
@@ -138,8 +141,12 @@ class RetrievalAgent:
                 for _, row in gene_data.iterrows():
                     if mutation_type == row['mutation_type']:
                         # Simple position proximity matching
-                        if abs(row['position'] - position) <= 5:
-                            matches.append(row.to_dict())
+                        try:
+                            row_position = int(row['position']) if isinstance(row['position'], str) else row['position']
+                            if abs(row_position - position) <= 5:
+                                matches.append(row.to_dict())
+                        except (ValueError, TypeError):
+                            continue
         
         # Strategy 2: Match by mutation type if no position matches
         if not matches:
@@ -170,10 +177,15 @@ class RetrievalAgent:
         if mutation.get('position') == clinvar_record.get('position'):
             score += 0.5
         elif mutation.get('position') and clinvar_record.get('position'):
-            # Proximity score
-            distance = abs(mutation.get('position') - clinvar_record.get('position'))
-            if distance <= 10:
-                score += 0.3 * (1 - distance / 10)
+            # Proximity score - convert both to int
+            try:
+                mut_pos = int(mutation.get('position'))
+                clinvar_pos = int(clinvar_record.get('position'))
+                distance = abs(mut_pos - clinvar_pos)
+                if distance <= 10:
+                    score += 0.3 * (1 - distance / 10)
+            except (ValueError, TypeError):
+                pass
         
         # Mutation type match
         if mutation.get('type') == clinvar_record.get('mutation_type'):

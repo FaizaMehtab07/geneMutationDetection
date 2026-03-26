@@ -1,0 +1,58 @@
+{
+  "timestamp": "2026-03-26T19:35:43.722203",
+  "total_tests": 7,
+  "passed_tests": 7,
+  "success_rate": 100.0,
+  "all_passed": true,
+  "test_details": [
+    {
+      "test_name": "API Health Check",
+      "success": true,
+      "details": "Status: operational, Version: 1.0.0",
+      "error": "",
+      "timestamp": "2026-03-26T19:35:38.365752"
+    },
+    {
+      "test_name": "Reference Genes Endpoint",
+      "success": true,
+      "details": "Available genes: ['TP53']",
+      "error": "",
+      "timestamp": "2026-03-26T19:35:38.484457"
+    },
+    {
+      "test_name": "File Upload Endpoint",
+      "success": true,
+      "details": "Uploaded sequence length: 51",
+      "error": "",
+      "timestamp": "2026-03-26T19:35:38.619996"
+    },
+    {
+      "test_name": "Validation Agent (Invalid Sequence)",
+      "success": true,
+      "details": "Validation status: validation_failed, Errors: ['Invalid nucleotides found: 1, 2, 3, X, Y, Z']",
+      "error": "",
+      "timestamp": "2026-03-26T19:35:38.788336"
+    },
+    {
+      "test_name": "Full Analysis Pipeline (All 7 Agents)",
+      "success": true,
+      "details": "Status: completed, Agents working: 7/7, Mutations: 1, Classification: Potentially Pathogenic, Identity: 65.54%",
+      "error": "",
+      "timestamp": "2026-03-26T19:35:43.721327"
+    },
+    {
+      "test_name": "Gemini AI Integration",
+      "success": true,
+      "details": "Model: gemini-3-flash-preview, Success: True, Has explanation: True",
+      "error": "",
+      "timestamp": "2026-03-26T19:35:43.721924"
+    },
+    {
+      "test_name": "ClinVar RAG Retrieval",
+      "success": true,
+      "details": "Success: True, Evidence records: 2",
+      "error": "",
+      "timestamp": "2026-03-26T19:35:43.721935"
+    }
+  ]
+}

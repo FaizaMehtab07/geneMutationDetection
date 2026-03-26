@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
-import { FlaskConical, Upload, Play, FileText, Activity } from '@phosphor-icons/react';
+import { Flask, Upload, Play, FileText, CircleNotch } from '@phosphor-icons/react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
@@ -117,7 +117,7 @@ const Dashboard = () => {
         <div className="w-full max-w-7xl mx-auto px-4 md:px-8 py-4">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-[#E6EBE8] rounded-lg">
-              <FlaskConical size={28} weight="duotone" className="text-[#52745E]" />
+              <Flask size={28} weight="duotone" className="text-[#52745E]" />
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-slate-900" style={{ fontFamily: 'Work Sans, sans-serif' }}>
@@ -165,7 +165,7 @@ const Dashboard = () => {
                 >
                   {isAnalyzing ? (
                     <>
-                      <Activity size={20} className="mr-2 animate-spin" />
+                      <CircleNotch size={20} className="mr-2 animate-spin" />
                       Analyzing...
                     </>
                   ) : (
@@ -217,7 +217,7 @@ const Dashboard = () => {
                   <div className="text-center space-y-4">
                     <div className="flex justify-center">
                       <div className="p-6 bg-[#F4F3EF] rounded-full">
-                        <Activity size={48} weight="duotone" className="text-[#8A948F]" />
+                        <CircleNotch size={48} weight="duotone" className="text-[#8A948F]" />
                       </div>
                     </div>
                     <div>
