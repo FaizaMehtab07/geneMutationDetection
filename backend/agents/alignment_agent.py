@@ -1,9 +1,45 @@
 """
-Alignment Agent
-Responsible for aligning input sequences with reference gene:
-- Use Biopython pairwise alignment
-- Handle sequence alignment
-- Return alignment details and positions
+Alignment Agent - DNA Sequence Comparison
+==========================================
+
+PURPOSE:
+Aligns two DNA sequences to find the best way to match them up, even if
+they have different lengths due to insertions or deletions.
+
+ANALOGY:
+Imagine comparing two similar sentences with typos:
+  Reference: "THE QUICK BROWN FOX"
+  Query:     "THE QICK BROWN  FOX"  (missing 'U', extra space)
+
+Alignment finds the best way to line them up:
+  Ref: THE QUICK BROWN FOX
+       ||| |||| ||||| |||
+  Qry: THE QI-CK BROWN FOX
+
+ALGORITHM:
+Uses Needleman-Wunsch global alignment from Biopython:
+- Match score: +2 (reward for matching letters)
+- Mismatch penalty: -1 (penalty for differences)
+- Gap penalties: -0.5 open, -0.1 extend
+
+WHY THIS MATTERS:
+Without alignment, we can't accurately detect mutations. A deletion shifts
+all downstream positions, making direct comparison impossible.
+
+EXAMPLE:
+  Without alignment:
+    Ref: ATCGATCG
+    Qry: ATC-ATCG  (G deleted at position 4)
+    Position 4: G vs A - FALSE MISMATCH!
+    Position 5: A vs T - FALSE MISMATCH!
+    ...everything looks wrong
+
+  With alignment:
+    Ref: ATCGATCG
+         |||*||||
+    Qry: ATC-ATCG
+    Position 4: G vs gap - TRUE DELETION detected!
+    Other positions match correctly.
 """
 
 from Bio import pairwise2
@@ -24,14 +60,45 @@ class AlignmentAgent:
     
     def align(self, query_sequence: str) -> Dict:
         """
-        Align query sequence with reference sequence
-        Uses global alignment with match/mismatch scoring
+        Align query sequence with reference sequence using global alignment
+        
+        EDUCATIONAL EXPLANATION:
+        This function finds the optimal way to align two DNA sequences.
+        Think of it like spell-checking, but for DNA. It finds where
+        letters match, where they differ, and where gaps should be inserted.
+        
+        SCORING SYSTEM:
+        - Each matching nucleotide: +2 points (reward similarity)
+        - Each mismatch: -1 point (penalize differences)
+        - Opening a gap: -0.5 points (penalize insertions/deletions)
+        - Extending a gap: -0.1 points (prefer fewer long gaps over many short ones)
+        
+        The algorithm tries thousands of possible alignments and picks
+        the one with the highest score.
+        
+        ALGORITHM USED:
+        Needleman-Wunsch global alignment (Biopython's pairwise2.align.globalms)
+        - "Global" means it aligns the entire sequences end-to-end
+        - Alternative would be "local" which finds best matching regions
+        
+        TIME COMPLEXITY:
+        O(n*m) where n and m are sequence lengths
+        For typical gene sequences (1000-5000 bp), this takes ~1-2 seconds
         
         Args:
-            query_sequence: Input sequence to align
+            query_sequence: Input DNA sequence from user
             
         Returns:
-            Dictionary containing alignment results
+            Dictionary containing:
+            - success: Whether alignment succeeded
+            - aligned_reference: Reference with gaps inserted ('-' characters)
+            - aligned_query: Query with gaps inserted
+            - score: Alignment quality score (higher = better match)
+            - matches: Count of matching positions
+            - mismatches: Count of different positions (no gaps)
+            - gaps: Total gaps in both sequences
+            - identity_percent: Percentage of positions that match
+            - alignment_visual: Formatted chunks for display
         """
         query_sequence = query_sequence.upper().strip()
         

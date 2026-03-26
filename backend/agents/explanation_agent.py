@@ -1,12 +1,29 @@
 """
-Explanation Agent
-Responsible for generating AI-powered explanations:
-- Use Gemini API for natural language generation
-- Generate explanations based on:
-  - Mutation details
-  - Classification results
-  - Retrieved evidence
-- No hardcoded explanations
+Explanation Agent - AI-Powered Clinical Report Generation
+===========================================================
+
+PURPOSE:
+This agent generates human-readable medical reports using Google Gemini AI.
+It's the final step in the pipeline, translating technical bioinformatics
+data into actionable clinical advice that doctors and patients can understand.
+
+HOW IT WORKS:
+1. Collects outputs from all 6 previous agents
+2. Constructs a detailed prompt with mutation data, classification, and evidence
+3. Sends prompt to Gemini 3 Flash AI model via Emergent Integrations library
+4. AI generates structured clinical report with interpretations and recommendations
+5. Falls back to rule-based template if AI service is unavailable
+
+WHY AI INSTEAD OF TEMPLATES:
+- Personalized: Considers specific mutations detected
+- Contextual: Incorporates ClinVar evidence and gene function
+- Natural: Reads like a human geneticist wrote it
+- Adaptive: Can explain novel mutation combinations
+
+EDUCATIONAL NOTE:
+This is an example of "AI-Augmented Bioinformatics" where computational
+analysis is enhanced with natural language AI to bridge the gap between
+technical findings and clinical action.
 """
 
 from emergentintegrations.llm.chat import LlmChat, UserMessage
@@ -36,16 +53,37 @@ class ExplanationAgent:
                                   evidence: Dict,
                                   gene: str = 'TP53') -> Dict:
         """
-        Generate comprehensive explanation using Gemini AI
+        Generate comprehensive clinical explanation using Gemini AI
+        
+        EDUCATIONAL OVERVIEW:
+        This function orchestrates the AI report generation process. It's like
+        having a virtual genetic counselor that reads all the technical data
+        and writes a patient-friendly explanation.
+        
+        PROCESS:
+        1. Initialize Gemini chat with clinical geneticist persona
+        2. Build comprehensive prompt with all findings
+        3. Send to AI and await response
+        4. Return formatted explanation
+        5. If AI fails, fallback to rule-based template
+        
+        WHY ASYNC:
+        AI API calls can take 2-5 seconds. Using async/await allows the
+        server to handle other requests while waiting for Gemini's response.
         
         Args:
-            mutations: List of classified mutations
-            classification: Classification results
-            evidence: Retrieved ClinVar evidence
-            gene: Gene name
+            mutations: List of classified mutations from classification agent
+            classification: Overall risk assessment and rationale
+            evidence: ClinVar database matches from retrieval agent
+            gene: Gene name (default TP53)
             
         Returns:
-            Dictionary with generated explanation
+            Dictionary containing:
+            - success: Whether AI generation succeeded
+            - explanation: The generated text report
+            - model: Which model was used (gemini or fallback)
+            - gene: Gene analyzed
+            - error: Error message if AI failed (optional)
         """
         try:
             # Create chat instance with Gemini

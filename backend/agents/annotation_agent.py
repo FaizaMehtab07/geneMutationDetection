@@ -1,9 +1,60 @@
 """
-Annotation Agent
-Responsible for annotating mutations:
-- Convert DNA mutations to protein mutations
-- Use codon translation tables
-- Determine amino acid changes
+Annotation Agent - DNA to Protein Translation
+==============================================
+
+PURPOSE:
+Translates DNA-level mutations into protein-level effects. This is crucial
+because proteins do the actual work in cells, not DNA. DNA is just the
+instruction manual.
+
+THE GENETIC CODE:
+DNA alphabet: 4 letters (A, T, C, G)
+Protein alphabet: 20 amino acids (A, C, D, E, F, G, H, I, K, L, M, N, P, Q, R, S, T, V, W, Y)
+
+DNA is read in triplets called CODONS:
+  ATG = Methionine (M)
+  TGG = Tryptophan (W)
+  TAA = STOP (end of protein)
+  
+Each codon maps to exactly one amino acid (but multiple codons can
+map to same amino acid - this is "degeneracy" of genetic code).
+
+MUTATION EFFECTS:
+
+1. MISSENSE:
+   DNA change causes amino acid change
+   Example: CGT (Arginine) → CAT (Histidine)
+   Notation: R175H (Arginine at position 175 → Histidine)
+   Impact: May affect protein function
+
+2. NONSENSE:
+   DNA change creates STOP codon
+   Example: CAG (Glutamine) → TAG (STOP)
+   Notation: Q175* (Glutamine at 175 → Stop)
+   Impact: Protein truncated (usually severe)
+
+3. SYNONYMOUS (Silent):
+   DNA change but same amino acid
+   Example: CGT → CGC (both = Arginine)
+   Notation: R175R or R175=
+   Impact: Usually none (same protein made)
+
+4. FRAMESHIFT:
+   Insertion/deletion not divisible by 3
+   Example: Insert 1 nucleotide
+   Impact: All downstream codons shift
+           → Completely different protein
+           → Usually nonsense (catastrophic)
+
+WHY PROTEIN LEVEL MATTERS:
+A mutation that doesn't change the protein (synonymous) is usually
+harmless. But a mutation that changes the protein can:
+- Break enzyme active sites
+- Disrupt protein folding
+- Remove DNA binding domains
+- Create unstable proteins
+
+This agent determines which scenario applies to each mutation.
 """
 
 from typing import Dict, List, Optional

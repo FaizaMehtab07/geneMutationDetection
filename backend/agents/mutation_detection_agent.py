@@ -1,10 +1,46 @@
 """
-Mutation Detection Agent
-Responsible for detecting mutations:
-- Detect substitutions (SNPs)
-- Detect insertions
-- Detect deletions
-- Return mutation positions and details
+Mutation Detection Agent - Finding Genetic Differences
+=======================================================
+
+PURPOSE:
+Scans aligned sequences to identify exact mutations: substitutions,
+insertions, and deletions. This is where we discover what's different
+between the patient's DNA and healthy reference DNA.
+
+MUTATION TYPES EXPLAINED:
+
+1. SUBSTITUTION (Point Mutation):
+   One nucleotide replaced with another
+   Example: ATCG → ATGG (C changed to G)
+   Impact: Often changes one amino acid (missense mutation)
+
+2. DELETION:
+   One or more nucleotides removed
+   Example: ATCGAT → AT-GAT (CG deleted)
+   Impact: Usually causes frameshift (severe)
+
+3. INSERTION:
+   One or more nucleotides added
+   Example: ATCGAT → ATCGCGAT (CG inserted)
+   Impact: Usually causes frameshift (severe)
+
+WHY DETECTION IS TRICKY:
+Deletions and insertions shift all downstream positions, requiring
+proper alignment first. That's why alignment agent runs before this one.
+
+FRAMESHIFT CONCEPT:
+DNA is read in groups of 3 (codons). If you insert/delete 1 or 2
+nucleotides, it shifts the reading frame:
+  Original: ATG|CAT|GGC → Met|His|Gly
+  Delete 1: ATG|CAG|GC? → Met|Gln|???
+  
+All amino acids after the mutation become wrong (usually catastrophic).
+
+ALGORITHM:
+Walks through aligned sequences character-by-character, tracking:
+- Position in original (ungapped) reference
+- Whether bases match or differ
+- Consecutive gaps indicating indels
 """
 
 from typing import Dict, List

@@ -1,10 +1,53 @@
 """
-Retrieval Agent (RAG - Retrieval-Augmented Generation)
-Responsible for retrieving relevant evidence:
-- Load ClinVar dataset
-- Search for similar mutations
-- Return relevant clinical evidence
-- Dynamic retrieval (no hardcoding)
+Retrieval Agent (RAG) - Evidence-Based Mutation Search
+=======================================================
+
+PURPOSE:
+Implements RAG (Retrieval-Augmented Generation) to find scientific evidence
+from ClinVar database. This adds credibility by showing "other patients with
+this mutation also had these outcomes."
+
+WHAT IS RAG?
+RAG = Retrieval-Augmented Generation
+Traditional AI: Relies only on training data (can be outdated or wrong)
+RAG: Searches real database first, then uses that evidence to inform response
+Result: More accurate, verifiable, up-to-date answers
+
+CLINVAR DATABASE:
+- NIH's database of genetic variants
+- Links mutations to diseases
+- Includes expert reviews
+- Updated continuously with new research
+- Our sample has 13 records; full ClinVar has millions
+
+SEARCH STRATEGY:
+1. Exact Match: Find mutations at exact same position
+   - Most reliable evidence
+   - Example: Both have mutation at position 175
+
+2. Proximity Match: Find mutations within ±5 nucleotides
+   - Nearby mutations often in same functional domain
+   - Example: Mutation at 175 vs evidence at 173
+
+3. Type Match: Find same mutation type (sub/ins/del)
+   - Different positions but similar mechanism
+   - Least specific but still relevant
+
+MATCH QUALITY SCORING:
+- Exact position + same type = 1.0 (100%)
+- Nearby position + same type = 0.6-0.8
+- Same type only = 0.3
+
+WHY THIS MATTERS:
+Instead of just saying "this mutation looks bad," we can say "three
+other patients with this mutation developed Li-Fraumeni Syndrome,
+according to expert-reviewed studies in ClinVar."
+
+LIMITATIONS:
+- Sample database only has 13 records (for demo)
+- Full ClinVar would give much more evidence
+- Novel mutations may have no matches
+- Requires periodic database updates
 """
 
 import pandas as pd
