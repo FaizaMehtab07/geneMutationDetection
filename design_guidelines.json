@@ -1,0 +1,114 @@
+{
+  "theme_and_archetype": {
+    "theme": "Light",
+    "archetype": "1 (Organic & Earthy)",
+    "rationale": "Medical and clinical genomics dashboards typically default to sterile, cold blues. E1 approach: Utilize an Organic & Earthy palette (bone-white, moss green, terracotta) to instill trust, calm, and grounded precision for clinicians and researchers analyzing high-stakes gene data."
+  },
+  "typography": {
+    "fonts": {
+      "headings": "Work Sans",
+      "body": "IBM Plex Sans",
+      "monospace": "IBM Plex Mono"
+    },
+    "hierarchy_rules": {
+      "h1": "text-4xl md:text-5xl font-semibold tracking-tight text-slate-900",
+      "h2": "text-2xl md:text-3xl font-medium tracking-tight text-slate-900",
+      "h3": "text-xl font-medium tracking-tight text-slate-800",
+      "body": "text-base font-normal leading-relaxed text-slate-700",
+      "sequence_data": "font-mono text-sm tracking-widest text-slate-800 whitespace-pre overflow-x-auto",
+      "labels": "text-xs font-bold uppercase tracking-[0.2em] text-slate-500"
+    }
+  },
+  "colors": {
+    "shadcn_variables": {
+      "background": "#FDFCF9",
+      "foreground": "#2A2F2D",
+      "card": "#FFFFFF",
+      "card_foreground": "#2A2F2D",
+      "popover": "#FFFFFF",
+      "popover_foreground": "#2A2F2D",
+      "primary": "#52745E",
+      "primary_foreground": "#FFFFFF",
+      "secondary": "#E6EBE8",
+      "secondary_foreground": "#425F4C",
+      "muted": "#F4F3EF",
+      "muted_foreground": "#8A948F",
+      "accent": "#F4F3EF",
+      "accent_foreground": "#2A2F2D",
+      "destructive": "#C16353",
+      "destructive_foreground": "#FFFFFF",
+      "border": "#E5E4DE",
+      "input": "#E5E4DE",
+      "ring": "#52745E"
+    },
+    "domain_specific": {
+      "risk_high": "#C16353",
+      "risk_moderate": "#D19B53",
+      "risk_low": "#52745E",
+      "sequence_a": "#52745E",
+      "sequence_c": "#D19B53",
+      "sequence_t": "#C16353",
+      "sequence_g": "#5C6560"
+    }
+  },
+  "spacing_and_layout": {
+    "philosophy": "Control Room Grid - high density, structured for analytical scannability. Minimal shadows, strong 1px borders to separate dense genomic data streams.",
+    "container": "w-full max-w-7xl mx-auto p-4 md:p-8",
+    "grid_system": {
+      "base": "grid grid-cols-1 md:grid-cols-12 gap-6",
+      "main_view": "col-span-1 md:col-span-8",
+      "side_panel": "col-span-1 md:col-span-4"
+    },
+    "card_style": "bg-card border border-border rounded-lg shadow-sm overflow-hidden"
+  },
+  "components": {
+    "sequence_alignment_viewer": {
+      "classes": "font-mono bg-muted p-4 md:p-6 rounded-md border border-border overflow-x-auto whitespace-pre text-sm tracking-widest",
+      "interaction": "Highlight mutations dynamically with bg-[#F5E6E3] for pathogenic mutations or bg-[#E6EBE8] for benign, ensuring high contrast on focus."
+    },
+    "risk_badge": {
+      "high_risk": "bg-[#F5E6E3] text-[#C16353] border border-[#EACCC8] px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider",
+      "low_risk": "bg-[#E6EBE8] text-[#52745E] border border-[#CCD7D1] px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider"
+    },
+    "rag_evidence_card": {
+      "classes": "border-l-4 border-primary bg-card p-4 rounded-r-md shadow-sm mb-3 text-sm text-foreground",
+      "header_classes": "text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground mb-2"
+    },
+    "tabs": {
+      "override_classes": "w-full justify-start border-b border-border bg-transparent p-0 mb-6",
+      "trigger_classes": "data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-4 py-2"
+    }
+  },
+  "motion": {
+    "microinteractions": "transition-colors duration-200 ease-in-out",
+    "hover_states": "hover:bg-accent hover:text-accent-foreground",
+    "focus_states": "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+    "loaders": "animate-pulse bg-muted rounded-md h-full w-full"
+  },
+  "icons": {
+    "library": "@phosphor-icons/react",
+    "installation": "yarn add @phosphor-icons/react"
+  },
+  "media_urls": {
+    "dashboard_abstract_pattern": {
+      "url": "https://images.unsplash.com/photo-1579154392429-0e6b4e850ad2?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMjd8MHwxfHNlYXJjaHwzfHxtZWRpY2FsJTIwZ2VuZXRpY3MlMjByZXNlYXJjaCUyMGxhYm9yYXRvcnl8ZW58MHx8fHwxNzc0NTUwOTY4fDA&ixlib=rb-4.1.0&q=85",
+      "description": "Multi-colored dots pattern abstractly representing microarray genetic data. Use softly layered behind the hero or login section (opacity-10)."
+    },
+    "dna_visual": {
+      "url": "https://images.pexels.com/photos/35967917/pexels-photo-35967917.png?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Abstract rendering of a DNA strand. Perfect for the AI explanation header banner or empty states."
+    },
+    "clinical_context": {
+      "url": "https://images.unsplash.com/photo-1578496480240-32d3e0c04525?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMjd8MHwxfHNlYXJjaHwyfHxtZWRpY2FsJTIwZ2VuZXRpY3MlMjByZXNlYXJjaCUyMGxhYm9yYXRvcnl8ZW58MHx8fHwxNzc0NTUwOTY4fDA&ixlib=rb-4.1.0&q=85",
+      "description": "Lab scientist context image, use for onboarding, about, or authentication screens."
+    }
+  },
+  "instructions_to_main_agent": [
+    "Design Philosophy: You are building a precision tool for clinicians. Keep layouts dense and functional (Control Room Grid). Do NOT use centered, airy layouts typical of marketing pages.",
+    "Data Test IDs: All interactive elements, buttons, inputs, tabs, and critical data containers MUST have a 'data-testid' attribute (e.g., 'data-testid=\"upload-sequence-btn\"').",
+    "Typography: Use 'IBM Plex Mono' for the sequence alignment visualization. The 'A C T G' characters MUST align perfectly across rows. Do not use sans-serif for sequence strings.",
+    "Colors: Strictly map the 'shadcn_variables' provided above into your Tailwind/Shadcn CSS setup. This replaces the default black/white Vercel look with an organic, trusted medical palette.",
+    "Component Choice: Rely heavily on Shadcn 'Card', 'Tabs' (for switching between map, alignment, and evidence), 'Data Table' (for RAG results), and 'Badge' (for Risk).",
+    "Images: Exclusively use the URLs provided in 'media_urls'. Avoid any placeholder image services."
+  ]
+}
