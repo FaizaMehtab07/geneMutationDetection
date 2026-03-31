@@ -1,0 +1,22 @@
+mutation_id,gene,disease_category,mutation_type,position,ref_allele,alt_allele,protein_change,clinical_significance,review_status,condition,evidence_summary
+CLV_TP53_001,TP53,Cancer,substitution,175,CGC,CAC,R175H,Pathogenic,Reviewed by expert panel,Li-Fraumeni syndrome,Hotspot mutation in DNA binding domain. Associated with early-onset cancers. Loss of tumor suppressor function.
+CLV_TP53_002,TP53,Cancer,substitution,248,CGG,TGG,R248W,Pathogenic,Reviewed by expert panel,Multiple cancer types,Critical contact residue mutation. Disrupts p53-DNA interaction and transactivation.
+CLV_TP53_003,TP53,Cancer,substitution,273,CGT,CAT,R273H,Pathogenic,Reviewed by expert panel,Hereditary cancer syndrome,Hotspot mutation affecting DNA binding. Complete loss of tumor suppressor function.
+CLV_TP53_004,TP53,Cancer,substitution,282,CGG,TGG,R282W,Pathogenic,Criteria provided,Breast and ovarian cancer,DNA binding mutation affecting p53 stability and function.
+CLV_TP53_005,TP53,Cancer,deletion,155,GACGA,-,Frameshift,Pathogenic,Criteria provided,Li-Fraumeni syndrome,Frameshift mutation leading to premature stop codon and loss of function.
+CLV_BRCA1_001,BRCA1,Cancer,substitution,1853,ATG,ACG,M1775T,Pathogenic,Reviewed by expert panel,Hereditary breast and ovarian cancer,Disrupts BRCT domain function. Impairs DNA repair.
+CLV_BRCA1_002,BRCA1,Cancer,deletion,5382,C,-,Frameshift,Pathogenic,Reviewed by expert panel,Hereditary breast and ovarian cancer,Common Ashkenazi Jewish founder mutation. Truncates protein.
+CLV_BRCA1_003,BRCA1,Cancer,substitution,185,AG,-,Frameshift,Pathogenic,Reviewed by expert panel,Hereditary breast and ovarian cancer,Founder mutation. Complete loss of BRCA1 function.
+CLV_BRCA2_001,BRCA2,Cancer,substitution,6174,T,-,Frameshift,Pathogenic,Reviewed by expert panel,Hereditary breast and ovarian cancer,Ashkenazi Jewish founder mutation. Protein truncation.
+CLV_BRCA2_002,BRCA2,Cancer,substitution,2808,AAA,AGA,K2808R,Uncertain significance,Criteria provided,Unknown,Missense variant of uncertain significance. Requires functional studies.
+CLV_EGFR_001,EGFR,Cancer,deletion,746,GGAATTAAGA,-,In-frame deletion,Pathogenic,Reviewed by expert panel,Non-small cell lung cancer,Exon 19 deletion. Activates EGFR signaling. Oncogenic driver mutation.
+CLV_EGFR_002,EGFR,Cancer,substitution,858,T,G,L858R,Pathogenic,Reviewed by expert panel,Non-small cell lung cancer,Kinase domain mutation. Constitutively active EGFR. Responds to TKI therapy.
+CLV_TCF7L2_001,TCF7L2,Metabolic,substitution,290,C,T,P290L,Risk factor,Population study,Type 2 diabetes,Common variant associated with 1.4x increased T2D risk. Affects insulin secretion.
+CLV_TCF7L2_002,TCF7L2,Metabolic,substitution,480,G,A,R480Q,Risk factor,Population study,Type 2 diabetes,Associated with impaired beta-cell function and reduced insulin secretion.
+CLV_PPARG_001,PPARG,Metabolic,substitution,12,C,G,P12A,Protective,Population study,Type 2 diabetes,Common variant. 0.8x risk for T2D. Improves insulin sensitivity.
+CLV_PPARG_002,PPARG,Metabolic,substitution,115,C,A,P115Q,Pathogenic,Criteria provided,Insulin resistance syndrome,Dominant negative mutation. Severe insulin resistance and early diabetes.
+CLV_FTO_001,FTO,Metabolic,substitution,16,A,T,T16M,Risk factor,Population study,Obesity and T2D,Intronic variant affecting FTO expression. Associated with BMI and diabetes risk.
+CLV_APP_001,APP,Neurological,substitution,717,G,A,V717I,Pathogenic,Reviewed by expert panel,Early-onset Alzheimer disease,Increases Abeta42 production. Causes familial Alzheimer disease.
+CLV_APP_002,APP,Neurological,substitution,693,G,C,E693Q,Pathogenic,Reviewed by expert panel,Early-onset Alzheimer disease,Dutch-type cerebral amyloid angiopathy. Vascular amyloid deposition.
+CLV_PSEN1_001,PSEN1,Neurological,substitution,246,A,G,M146V,Pathogenic,Reviewed by expert panel,Early-onset Alzheimer disease,Gamma-secretase mutation. Increases Abeta42/40 ratio. Age of onset 35-40 years.
+CLV_PSEN1_002,PSEN1,Neurological,substitution,384,G,A,G384A,Pathogenic,Criteria provided,Early-onset Alzheimer disease,Affects gamma-secretase activity. Familial Alzheimer disease with early onset.
