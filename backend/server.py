@@ -35,6 +35,7 @@ from agents.alignment_agent import AlignmentAgent
 from agents.mutation_detection_agent import MutationDetectionAgent
 from agents.annotation_agent import AnnotationAgent
 from agents.classification_agent import ClassificationAgent
+from agents.retrieval_agent import RetrievalAgent
 
 # Load environment variables from .env file
 # This reads configuration like database URL, CORS settings, etc.
@@ -117,8 +118,87 @@ def load_reference_sequence(gene_name: str) -> str:
 
 # Load available reference sequences at startup
 # Dictionary: gene_name -> sequence
+# Supports multiple genes across different disease categories
 REFERENCE_SEQUENCES = {
-    'TP53': load_reference_sequence('TP53')
+    # Cancer genes
+    'TP53': load_reference_sequence('TP53'),
+    'BRCA1': load_reference_sequence('BRCA1'),
+    'BRCA2': load_reference_sequence('BRCA2'),
+    'EGFR': load_reference_sequence('EGFR'),
+    # Metabolic genes
+    'TCF7L2': load_reference_sequence('TCF7L2'),
+    'PPARG': load_reference_sequence('PPARG'),
+    'FTO': load_reference_sequence('FTO'),
+    # Neurological genes
+    'APP': load_reference_sequence('APP'),
+    'PSEN1': load_reference_sequence('PSEN1')
+}
+
+# Gene metadata with disease categories
+GENE_INFO = {
+    'TP53': {
+        'full_name': 'Tumor Protein P53',
+        'disease_category': 'Cancer',
+        'chromosome': '17',
+        'function': 'Tumor suppressor, cell cycle regulator',
+        'associated_diseases': ['Li-Fraumeni syndrome', 'Various cancers']
+    },
+    'BRCA1': {
+        'full_name': 'Breast Cancer 1',
+        'disease_category': 'Cancer',
+        'chromosome': '17',
+        'function': 'DNA repair, tumor suppressor',
+        'associated_diseases': ['Hereditary breast and ovarian cancer']
+    },
+    'BRCA2': {
+        'full_name': 'Breast Cancer 2',
+        'disease_category': 'Cancer',
+        'chromosome': '13',
+        'function': 'DNA repair, tumor suppressor',
+        'associated_diseases': ['Hereditary breast and ovarian cancer']
+    },
+    'EGFR': {
+        'full_name': 'Epidermal Growth Factor Receptor',
+        'disease_category': 'Cancer',
+        'chromosome': '7',
+        'function': 'Cell growth signaling',
+        'associated_diseases': ['Non-small cell lung cancer', 'Glioblastoma']
+    },
+    'TCF7L2': {
+        'full_name': 'Transcription Factor 7 Like 2',
+        'disease_category': 'Metabolic',
+        'chromosome': '10',
+        'function': 'Wnt signaling, insulin secretion',
+        'associated_diseases': ['Type 2 diabetes']
+    },
+    'PPARG': {
+        'full_name': 'Peroxisome Proliferator Activated Receptor Gamma',
+        'disease_category': 'Metabolic',
+        'chromosome': '3',
+        'function': 'Glucose and lipid metabolism',
+        'associated_diseases': ['Type 2 diabetes', 'Insulin resistance']
+    },
+    'FTO': {
+        'full_name': 'Fat Mass and Obesity Associated',
+        'disease_category': 'Metabolic',
+        'chromosome': '16',
+        'function': 'Energy homeostasis',
+        'associated_diseases': ['Obesity', 'Type 2 diabetes']
+    },
+    'APP': {
+        'full_name': 'Amyloid Precursor Protein',
+        'disease_category': 'Neurological',
+        'chromosome': '21',
+        'function': 'Neuronal development',
+        'associated_diseases': ['Early-onset Alzheimer disease', 'Cerebral amyloid angiopathy']
+    },
+    'PSEN1': {
+        'full_name': 'Presenilin 1',
+        'disease_category': 'Neurological',
+        'chromosome': '14',
+        'function': 'Gamma-secretase component',
+        'associated_diseases': ['Early-onset Alzheimer disease']
+    }
 }
 
 # ============================================================================
@@ -142,7 +222,13 @@ class AnalysisRequest(BaseModel):
     # Reference gene to compare against (optional, defaults to TP53)
     gene: str = Field(
         default="TP53",
-        description="Reference gene name (currently only TP53 supported)"
+        description="Reference gene name - supports: TP53, BRCA1, BRCA2, EGFR, TCF7L2, PPARG, FTO, APP, PSEN1"
+    )
+    
+    # Disease category (optional - will be inferred from gene)
+    disease_category: Optional[str] = Field(
+        default=None,
+        description="Disease category: Cancer, Metabolic, or Neurological"
     )
 
 class AnalysisResponse(BaseModel):
@@ -168,6 +254,7 @@ class AnalysisResponse(BaseModel):
     mutations: dict       # Detected mutations (substitutions, indels, etc.)
     annotations: dict     # Protein-level effects (missense, nonsense, etc.)
     classification: dict  # Risk classification (pathogenic, benign, etc.)
+    evidence: dict        # ClinVar evidence from retrieval agent
     
     # Overall status
     status: str  # 'completed' or 'validation_failed'
@@ -202,20 +289,36 @@ async def get_reference_genes():
     """
     Get list of available reference genes
     
-    Returns information about genes that can be analyzed.
+    Returns information about genes that can be analyzed,
+    organized by disease category.
     """
+    # Organize genes by disease category
+    genes_by_category = {
+        'Cancer': [],
+        'Metabolic': [],
+        'Neurological': []
+    }
+    
+    all_genes = []
+    
+    for gene_name, gene_info in GENE_INFO.items():
+        gene_data = {
+            "name": gene_name,
+            "full_name": gene_info['full_name'],
+            "disease_category": gene_info['disease_category'],
+            "chromosome": gene_info['chromosome'],
+            "function": gene_info['function'],
+            "associated_diseases": gene_info['associated_diseases'],
+            "length": len(REFERENCE_SEQUENCES[gene_name])
+        }
+        all_genes.append(gene_data)
+        genes_by_category[gene_info['disease_category']].append(gene_data)
+    
     return {
         "available_genes": list(REFERENCE_SEQUENCES.keys()),
-        "genes": [
-            {
-                "name": "TP53",
-                "full_name": "Tumor Protein P53",
-                "description": "Tumor suppressor gene, critical for cell cycle regulation",
-                "length": len(REFERENCE_SEQUENCES['TP53']),
-                "chromosome": "17",
-                "function": "Prevents cancer by regulating cell division"
-            }
-        ]
+        "total_genes": len(REFERENCE_SEQUENCES),
+        "genes": all_genes,
+        "genes_by_category": genes_by_category
     }
 
 @api_router.post("/analyze", response_model=AnalysisResponse)
@@ -288,6 +391,7 @@ async def analyze_sequence(request: AnalysisRequest):
                 mutations={},      # Empty
                 annotations={},    # Empty
                 classification={}, # Empty
+                evidence={},       # Empty
                 status="validation_failed"
             )
         
@@ -295,7 +399,7 @@ async def analyze_sequence(request: AnalysisRequest):
         # STAGE 2: ALIGNMENT AGENT
         # ====================================================================
         
-        logger.info("Stage 2/5: Aligning sequences")
+        logger.info("Stage 2/6: Aligning sequences")
         
         # Create alignment agent with reference sequence
         alignment_agent = AlignmentAgent(reference_sequence)
@@ -317,7 +421,7 @@ async def analyze_sequence(request: AnalysisRequest):
         # STAGE 3: MUTATION DETECTION AGENT
         # ====================================================================
         
-        logger.info("Stage 3/5: Detecting mutations")
+        logger.info("Stage 3/6: Detecting mutations")
         
         # Create mutation detection agent
         mutation_agent = MutationDetectionAgent()
@@ -333,7 +437,7 @@ async def analyze_sequence(request: AnalysisRequest):
         # STAGE 4: ANNOTATION AGENT
         # ====================================================================
         
-        logger.info("Stage 4/5: Annotating protein effects")
+        logger.info("Stage 4/6: Annotating protein effects")
         
         # Create annotation agent
         annotation_agent = AnnotationAgent()
@@ -355,7 +459,7 @@ async def analyze_sequence(request: AnalysisRequest):
         # STAGE 5: CLASSIFICATION AGENT
         # ====================================================================
         
-        logger.info("Stage 5/5: Classifying pathogenicity")
+        logger.info("Stage 5/6: Classifying pathogenicity")
         
         # Create classification agent
         classification_agent = ClassificationAgent()
@@ -365,6 +469,22 @@ async def analyze_sequence(request: AnalysisRequest):
         classification_result = classification_agent.classify(
             annotation_result['annotated_mutations'],
             mutation_result
+        )
+        
+        # ====================================================================
+        # STAGE 6: RETRIEVAL AGENT (Local ClinVar Evidence)
+        # ====================================================================
+        
+        logger.info("Stage 6/6: Retrieving clinical evidence")
+        
+        # Create retrieval agent (loads local ClinVar database)
+        retrieval_agent = RetrievalAgent()
+        
+        # Search ClinVar for evidence about detected mutations
+        # Returns: {success, total_evidence, evidence, database, gene}
+        evidence_result = retrieval_agent.retrieve(
+            annotation_result['annotated_mutations'],
+            request.gene
         )
         
         # ====================================================================
@@ -381,12 +501,14 @@ async def analyze_sequence(request: AnalysisRequest):
             mutations=mutation_result,
             annotations=annotation_result,
             classification=classification_result,
+            evidence=evidence_result,
             status="completed"
         )
         
         logger.info(f"Analysis {analysis_id} completed successfully")
         logger.info(f"Result: {classification_result['overall_classification']} "
-                   f"({mutation_result['total_mutations']} mutations)")
+                   f"({mutation_result['total_mutations']} mutations, "
+                   f"{evidence_result['total_evidence']} evidence records)")
         
         return response
         
