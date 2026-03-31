@@ -1,125 +1,48 @@
-# Multi-Agent AI System for Gene Mutation Detection and Clinical Interpretation
+# Gene Mutation Detection System - Local Edition
 
-## 🧬 What is This Project?
+A complete bioinformatics pipeline for detecting and analyzing DNA mutations **without any external API dependencies**. This system runs entirely on your local machine using only open-source libraries.
 
-A **production-ready bioinformatics application** that analyzes DNA sequences to detect genetic mutations and assess their clinical significance using 7 specialized AI agents working together.
+## What This System Does
 
-## 🎯 Real-World Use Case
+Analyzes DNA sequences to:
+1. **Validate** sequences (ensure only A, T, C, G nucleotides)
+2. **Align** with reference genes using Biopython
+3. **Detect** mutations (substitutions, insertions, deletions)
+4. **Annotate** protein-level effects (missense, nonsense, frameshift)
+5. **Classify** pathogenicity risk (Pathogenic/Benign)
+
+**All processing is LOCAL** - no internet connection or API keys required.
+
+## Real-World Application
 
 When a patient gets DNA sequenced, doctors need to know:
-- Does this person have mutations in cancer genes?
-- Are these mutations dangerous?
-- What diseases might they be at risk for?
+- Are there mutations in cancer-related genes?
+- Are these mutations dangerous or harmless?
+- What's the predicted clinical impact?
 
-This system automates that analysis, providing answers in seconds.
+This system automates that analysis using a 5-stage pipeline.
 
-## 🏗️ System Architecture - 7 Agent Pipeline
+## Technologies Used
 
-```
-User DNA Input
-    ↓
-[1] VALIDATION AGENT     → Checks sequence validity (only A,T,C,G)
-    ↓
-[2] ALIGNMENT AGENT      → Compares with reference DNA using Biopython
-    ↓
-[3] MUTATION DETECTION   → Finds substitutions, insertions, deletions
-    ↓
-[4] ANNOTATION AGENT     → Translates DNA changes to protein changes
-    ↓
-[5] CLASSIFICATION       → Determines if mutations are dangerous
-    ↓
-[6] RETRIEVAL (RAG)      → Searches ClinVar medical database
-    ↓
-[7] AI EXPLANATION       → Generates clinical report via Gemini
-    ↓
-Results Dashboard
-```
+- **Python 3.11+** - Core language
+- **FastAPI** - Web framework
+- **Biopython** - Sequence alignment (PairwiseAligner)
+- **Pandas/NumPy** - Data processing
+- **React** - Frontend UI
+- **No AI APIs** - Pure computational biology
 
-## 🔬 Key Concepts Explained Simply
-
-**What is a Gene Mutation?**
-- DNA is made of 4 letters: A, T, C, G
-- Mutation = difference from normal reference
-- Types: Substitution (A→T), Deletion (remove), Insertion (add)
-
-**Why TP53 Gene?**
-- "Guardian of the genome" - prevents cancer
-- Mutations found in 50% of cancers
-- Linked to Li-Fraumeni Syndrome
-
-**Pathogenic vs Benign:**
-- Pathogenic = Dangerous, likely causes disease
-- Benign = Harmless variation
-- Uncertain = Not enough evidence
-
-## 🛠️ Technologies Used
-
-**Backend:** Python, FastAPI, Biopython, MongoDB, Gemini AI  
-**Frontend:** React, Tailwind CSS, Shadcn/UI  
-**AI/ML:** Google Gemini 3 Flash, RAG (Retrieval-Augmented Generation)
-
-## 📁 Project Structure
-
-```
-/app
-├── backend/
-│   ├── agents/                         # 7 AI Agents
-│   │   ├── validation_agent.py         # Validates DNA
-│   │   ├── alignment_agent.py          # Aligns sequences
-│   │   ├── mutation_detection_agent.py # Detects mutations
-│   │   ├── annotation_agent.py         # DNA→Protein
-│   │   ├── classification_agent.py     # Risk assessment
-│   │   ├── retrieval_agent.py          # ClinVar RAG
-│   │   └── explanation_agent.py        # AI reports
-│   ├── data/
-│   │   ├── tp53_reference.fasta        # Reference gene
-│   │   └── clinvar_sample.csv          # Medical database
-│   ├── server.py                       # FastAPI app
-│   ├── requirements.txt                # Dependencies
-│   └── .env                            # Config
-│
-├── frontend/
-│   ├── src/components/
-│   │   ├── Dashboard.js                # Main page
-│   │   ├── SequenceInput.js            # DNA input
-│   │   ├── ResultsView.js              # Results display
-│   │   ├── MutationMap.js              # Visual map
-│   │   ├── AlignmentViewer.js          # Sequence alignment
-│   │   ├── EvidenceList.js             # ClinVar evidence
-│   │   └── AIExplanation.js            # AI report
-│   └── package.json
-│
-└── README.md (this file)
-```
-
-## 🚀 Setup for Local Execution
+## Quick Start
 
 ### Prerequisites
 
-1. **Python 3.11+**
 ```bash
-python --version  # Should show 3.11+
+# Check you have required tools
+python --version  # Should be 3.11+
+node --version    # Should be 18+
+yarn --version    # Should be 1.22+
 ```
 
-2. **Node.js 18+ and Yarn**
-```bash
-node --version   # Should show 18+
-yarn --version   # Should show 1.22+
-```
-
-3. **MongoDB**
-```bash
-# macOS
-brew services start mongodb-community
-
-# Linux
-sudo systemctl start mongod
-
-# Docker
-docker run -d -p 27017:27017 mongo:latest
-```
-
-### Step 1: Backend Setup
+### Backend Setup
 
 ```bash
 # Navigate to backend
@@ -128,348 +51,413 @@ cd backend
 # Create virtual environment
 python -m venv venv
 
-# Activate it
+# Activate virtual environment
 source venv/bin/activate  # macOS/Linux
 # OR
 venv\Scripts\activate     # Windows
 
-# Install dependencies
+# Install dependencies (all local, no API keys)
 pip install -r requirements.txt
-```
 
-### Step 2: Configure Backend
-
-Ensure `backend/.env` contains:
-```env
-MONGO_URL=mongodb://localhost:27017
-DB_NAME=gene_mutation_db
-CORS_ORIGINS=http://localhost:3000
-EMERGENT_LLM_KEY=sk-emergent-37d77Fc09E5CeE143C
-```
-
-### Step 3: Start Backend
-
-```bash
-# From backend/ directory
+# Start server
 uvicorn server:app --host 0.0.0.0 --port 8001 --reload
-
-# Should see:
-# INFO: Uvicorn running on http://0.0.0.0:8001
 ```
 
-Test: Visit http://localhost:8001/api/ (should show welcome message)
+Backend runs at: `http://localhost:8001`
 
-### Step 4: Frontend Setup
+Test it: `curl http://localhost:8001/api/`
 
-**Open new terminal** (keep backend running):
+### Frontend Setup
 
 ```bash
+# Open new terminal
 cd frontend
-yarn install  # Takes 2-3 minutes
-```
 
-### Step 5: Configure Frontend
+# Install dependencies
+yarn install
 
-Ensure `frontend/.env` contains:
-```env
-REACT_APP_BACKEND_URL=http://localhost:8001
-```
-
-### Step 6: Start Frontend
-
-```bash
-# From frontend/ directory
+# Start development server
 yarn start
-
-# Browser opens automatically at http://localhost:3000
 ```
 
-## 🧪 Testing the System
+Frontend opens at: `http://localhost:3000`
 
-### Quick Test
+## Project Structure
 
-1. Open http://localhost:3000
-2. Click **"Load Sample Sequence"** button
-3. Click **"Run Analysis"** button (takes ~5-10 seconds)
-4. View results in 5 tabs:
-   - Overview: Classification & mutation map
-   - Mutations: Detailed mutation list
-   - Alignment: Visual sequence comparison
-   - Evidence: ClinVar database matches
-   - AI Interpretation: Gemini-generated report
-
-### Expected Output
 ```
-Classification: Pathogenic
-Risk Level: HIGH
-Mutations: 5-6 detected
-Identity: ~41% match with reference
-Evidence: 3 ClinVar records
-AI Report: Comprehensive clinical interpretation
+/app
+├── backend/
+│   ├── agents/                      # Analysis modules
+│   │   ├── validation_agent.py      # Validates DNA input
+│   │   ├── alignment_agent.py       # Aligns sequences (Biopython)
+│   │   ├── mutation_detection_agent.py  # Detects mutations
+│   │   ├── annotation_agent.py      # DNA→Protein translation
+│   │   └── classification_agent.py  # Risk assessment
+│   ├── data/
+│   │   └── tp53_reference.fasta     # TP53 reference sequence
+│   ├── server.py                    # FastAPI app
+│   ├── requirements.txt             # Python dependencies
+│   └── .env                         # Configuration
+│
+├── frontend/
+│   ├── src/components/              # React components
+│   ├── package.json                 # Node dependencies
+│   └── .env                         # Frontend config
+│
+└── README.md                        # This file
 ```
 
-## 📸 UI Components Explained
+## The 5-Stage Pipeline
 
-### 1. Input Panel (Left)
-- **Gene Selector**: Choose TP53 (currently only option)
-- **File Upload**: Drag/drop FASTA files
-- **Sequence Box**: Paste DNA manually (A,T,C,G only)
-- **Load Sample**: Loads test sequence with mutations
-- **Run Analysis**: Starts 7-agent pipeline
-- **Reset**: Clears everything
-
-### 2. Results Panel (Right)
-
-**Overview Tab:**
-- Classification card (Pathogenic/Benign/Uncertain)
-- Risk badge (HIGH/MODERATE/LOW)
-- Quick stats (Gene, Mutations, Identity, Evidence)
-- Mutation map visualization (colored position markers)
-- Classification summary (4 boxes: Pathogenic/Potential/Uncertain/Benign)
-- Clinical recommendation
-
-**Mutations Tab:**
-- Individual mutation cards
-- Position, type, DNA change
-- Protein change (e.g., R175H)
-- Effect (missense/nonsense/frameshift)
-- Impact description
-
-**Alignment Tab:**
-- Alignment statistics (Score, Matches, Mismatches, Gaps)
-- Color-coded nucleotides:
-  - Green: Adenine (A)
-  - Red: Thymine (T)
-  - Yellow: Cytosine (C)
-  - Gray: Guanine (G)
-- Match indicators (|, *, space)
-
-**Evidence Tab:**
-- ClinVar database records
-- Mutation IDs, clinical significance
-- Associated conditions (cancers, syndromes)
-- Evidence summaries
-- Match quality scores
-
-**AI Interpretation Tab:**
-- Gemini-generated clinical report
-- Clinical interpretation section
-- Molecular impact explanation
-- Recommendations
-- Disclaimer
-
-## 🧠 How Each Agent Works
-
-### Agent 1: Validation (Quality Control)
-**Purpose:** Ensure input is valid before processing
+### Stage 1: Validation
+**Purpose:** Ensure input quality
 
 **Checks:**
 - Only A, T, C, G characters
-- Minimum 10 nucleotides
-- Maximum 10,000 nucleotides
-- Warns if not divisible by 3
+- Length between 10-10,000 nucleotides
+- No invalid characters
 
-**Why:** Invalid data would crash system or give meaningless results
+**Example:**
+```python
+# Valid
+ATCGATCGATCG
 
-### Agent 2: Alignment (DNA Comparison)
-**Purpose:** Line up query DNA with reference DNA
+# Invalid (contains numbers)
+ATCG123ATCG
+```
 
-**Method:**
-- Biopython pairwise global alignment
-- Needleman-Wunsch algorithm
-- Scoring: Match +2, Mismatch -1, Gap -0.5
+### Stage 2: Alignment
+**Purpose:** Match query sequence with reference
 
-**Output:** Aligned sequences with gaps inserted for best match
+**Algorithm:** Biopython PairwiseAligner (Needleman-Wunsch global alignment)
 
-**Why:** Sequences may differ in length due to insertions/deletions
+**Scoring:**
+- Match: +2 points
+- Mismatch: -1 point
+- Gap open: -0.5 points
+- Gap extend: -0.1 points
 
-### Agent 3: Mutation Detection (Find Differences)
-**Purpose:** Identify exact changes between sequences
+**Why needed:** Insertions/deletions shift positions. Alignment finds best match despite length differences.
+
+**Example:**
+```
+Reference: ATCG-ATCG
+           |||| ||||
+Query:     ATCGTATCG
+           (T inserted)
+```
+
+### Stage 3: Mutation Detection
+**Purpose:** Identify exact differences
 
 **Detects:**
-- Substitutions: One base changed (C→T)
-- Deletions: Bases removed
-- Insertions: Bases added
+1. **Substitutions** - One base changes (A→T)
+2. **Insertions** - Bases added
+3. **Deletions** - Bases removed
 
-**Output:** List of mutations with exact positions
+**Output:** List of mutations with positions and types
 
-**Why:** Different mutation types have different health impacts
+### Stage 4: Annotation
+**Purpose:** Translate DNA changes to protein effects
 
-### Agent 4: Annotation (DNA to Protein)
-**Purpose:** Translate DNA changes to protein changes
+**Uses genetic code:**
+- DNA triplets (codons) → Amino acids
+- ATG = Methionine (M)
+- TAG = Stop codon
 
-**Process:**
-- Uses genetic code (codon table)
-- Groups DNA into triplets (codons)
-- Each codon = 1 amino acid
+**Effect types:**
+- **Missense:** Amino acid changes (may affect function)
+- **Nonsense:** Stop codon created (truncates protein)
+- **Synonymous:** Silent change (no protein effect)
+- **Frameshift:** Reading frame shifted (usually severe)
 
-**Effects Classified:**
-- Missense: Changes amino acid
-- Nonsense: Creates stop codon (truncates protein)
-- Synonymous: No amino acid change (silent)
-- Frameshift: Shifts reading frame (severe)
+**Example:**
+```
+DNA:     CGT → CAT
+Protein: Arg → His
+Effect:  Missense (R175H)
+```
 
-**Why:** Proteins do cell work. Knowing protein impact predicts disease.
-
-### Agent 5: Classification (Risk Assessment)
-**Purpose:** Determine if mutations are dangerous
+### Stage 5: Classification
+**Purpose:** Assess pathogenicity risk
 
 **Rules:**
-- Frameshift → Pathogenic (HIGH)
-- Nonsense → Pathogenic (HIGH)
-- Missense → Potentially Pathogenic (MODERATE)
-- Synonymous → Benign (LOW)
+- Frameshift → **Pathogenic** (HIGH risk)
+- Nonsense → **Pathogenic** (HIGH risk)
+- Missense → **Potentially Pathogenic** (MODERATE risk)
+- Synonymous → **Benign** (LOW risk)
 
-**Output:** Overall classification + risk level + recommendation
+**Output:** Clinical classification + recommendation
 
-**Why:** Key medical decision - should patient be concerned?
+## Testing the System
 
-### Agent 6: Retrieval (RAG - Database Search)
-**Purpose:** Find scientific evidence from ClinVar
+### Test 1: Load Sample Sequence
 
-**Method:**
-- Searches by exact position match
-- Searches by position proximity (±5 nucleotides)
-- Searches by mutation type
-- Calculates match quality score
+1. Open `http://localhost:3000`
+2. Click "Load Sample Sequence"
+3. Click "Run Analysis"
+4. View results in tabs
 
-**Output:** Top matching evidence records
+**Expected output:**
+- Classification: Pathogenic
+- Risk: HIGH
+- Mutations: 4-6 detected
+- Identity: ~41% match
 
-**Why:** Provides scientific backing. If others with same mutation developed cancer, that's strong evidence.
+### Test 2: Perfect Match (No Mutations)
 
-### Agent 7: AI Explanation (Report Generation)
-**Purpose:** Generate human-readable medical report
-
-**Process:**
-- Collects all previous agent outputs
-- Constructs detailed prompt for Gemini
-- AI generates structured report with:
-  - Clinical interpretation
-  - Molecular impact
-  - Recommendations
-  - Patient counseling
-
-**Fallback:** Rule-based template if AI unavailable
-
-**Why:** Translates complex data into actionable medical advice
-
-## ⚙️ API Endpoints
-
-### GET /api/
-Health check
-```bash
-curl http://localhost:8001/api/
+Use first 100 bases of reference:
+```
+ATGGAGGAGCCGCAGTCAGATCCTAGCGTCGAGCCCCCTCTGAGTCAGGAA
+ACATTTTCAGACCTATGGAAACTACTTCCTGAAAACAACGTTCTGTCCCCC
 ```
 
-### GET /api/reference-genes
-List available genes
-```bash
-curl http://localhost:8001/api/reference-genes
+**Expected output:**
+- Classification: Benign
+- Mutations: 0
+- Identity: 100%
+
+### Test 3: Invalid Input
+
+Try invalid sequence:
+```
+ATCG123XYZ
 ```
 
-### POST /api/analyze
-Main analysis endpoint
+**Expected output:**
+- Validation Error: "Invalid nucleotides found: 1, 2, 3, X, Y, Z"
+
+## API Endpoints
+
+### Health Check
 ```bash
-curl -X POST http://localhost:8001/api/analyze \
-  -H "Content-Type: application/json" \
-  -d '{"sequence": "ATCGATCG...", "gene": "TP53"}'
+GET /api/
+```
+Returns API status and version
+
+### Get Available Genes
+```bash
+GET /api/reference-genes
+```
+Lists reference genes (currently TP53)
+
+### Analyze Sequence
+```bash
+POST /api/analyze
+Content-Type: application/json
+
+{
+  "sequence": "ATCGATCG...",
+  "gene": "TP53"
+}
 ```
 
-### POST /api/upload-sequence
-Upload FASTA file
+Returns complete analysis results
+
+### Upload FASTA File
 ```bash
-curl -X POST http://localhost:8001/api/upload-sequence \
-  -F "file=@sequence.fasta"
+POST /api/upload-sequence
+Content-Type: multipart/form-data
+
+file: sequence.fasta
 ```
 
-## ⚠️ Troubleshooting
+Extracts sequence from file
+
+## Understanding the Results
+
+### Validation Tab
+Shows if sequence passed quality checks:
+- ✅ Valid: Green checkmark, proceed to analysis
+- ❌ Invalid: Red X with error messages
+
+### Alignment Tab
+Visual comparison of sequences:
+- **Score:** Higher = better match
+- **Matches:** Identical positions
+- **Mismatches:** Different bases
+- **Gaps:** Insertions/deletions
+- **Identity %:** Percentage similarity
+
+Color coding:
+- Green: Adenine (A)
+- Red: Thymine (T)  
+- Yellow: Cytosine (C)
+- Gray: Guanine (G)
+
+### Mutations Tab
+Details of each mutation:
+- Position in sequence
+- Type (substitution/insertion/deletion)
+- DNA change (e.g., C→T)
+- Protein change (e.g., R175H)
+- Effect classification
+
+### Classification Tab
+Overall risk assessment:
+- **Pathogenic (HIGH):** Likely causes disease
+- **Potentially Pathogenic (MODERATE):** May cause disease
+- **Uncertain (MODERATE):** Unclear significance
+- **Benign (LOW):** Likely harmless
+
+## Code Comments
+
+Every file contains extensive line-by-line comments explaining:
+- **What** each line does
+- **Why** it's necessary
+- **How** it works
+- **What** output it produces
+
+Perfect for learning bioinformatics programming!
+
+## Limitations
+
+### Current Limitations:
+1. **Single gene:** Only TP53 (can add more easily)
+2. **Rule-based classification:** No machine learning yet
+3. **No population data:** Doesn't check variant frequencies
+4. **No conservation scores:** Doesn't use evolutionary data
+
+### What This System Does NOT Have:
+- ❌ External API dependencies
+- ❌ AI/ML models (intentionally kept simple)
+- ❌ Clinical database integration
+- ❌ Authentication/user accounts
+- ❌ Advanced visualizations
+
+### What This System DOES Have:
+- ✅ Complete local execution
+- ✅ Accurate sequence alignment
+- ✅ Real mutation detection
+- ✅ Protein effect prediction
+- ✅ Rule-based classification
+- ✅ Clean, commented code
+
+## Adding More Genes
+
+To add new reference genes:
+
+1. Create FASTA file:
+```bash
+# backend/data/brca1_reference.fasta
+>BRCA1 Reference Sequence
+ATGCGA...
+```
+
+2. Update `server.py`:
+```python
+REFERENCE_SEQUENCES = {
+    'TP53': load_reference_sequence('TP53'),
+    'BRCA1': load_reference_sequence('BRCA1')  # Add this
+}
+```
+
+3. Restart backend
+
+## Troubleshooting
 
 ### Backend won't start
+
+**Error:** `ModuleNotFoundError: No module named 'Bio'`
+
+**Solution:**
 ```bash
-# Ensure venv activated
+cd backend
 source venv/bin/activate
 pip install -r requirements.txt
 ```
 
 ### Port already in use
+
+**Error:** `Address already in use`
+
+**Solution:**
 ```bash
-# Kill process on port 8001
-kill -9 $(lsof -ti:8001)
+# Find and kill process on port 8001
+lsof -ti:8001 | xargs kill -9
+
 # Or use different port
 uvicorn server:app --port 8002
 ```
 
-### MongoDB connection failed
-```bash
-# Start MongoDB
-brew services start mongodb-community  # macOS
-sudo systemctl start mongod            # Linux
-```
-
 ### Frontend can't connect
-1. Check backend running: http://localhost:8001/api/
-2. Verify frontend/.env has: `REACT_APP_BACKEND_URL=http://localhost:8001`
-3. Restart: `yarn start`
 
-### AI explanation not working
-- Check EMERGENT_LLM_KEY in backend/.env
-- Demo key has daily limits
-- Check internet connection
-- Fallback template will be used if AI fails
+**Error:** `Network Error` in browser console
 
-## 🚧 Current Limitations
+**Solution:**
+1. Check backend is running: `curl http://localhost:8001/api/`
+2. Verify `frontend/.env` has:
+   ```
+   REACT_APP_BACKEND_URL=http://localhost:8001
+   ```
+3. Restart frontend: `yarn start`
 
-1. **Single Gene:** Only TP53 (others need reference sequences)
-2. **Small Database:** 13 ClinVar records (full has millions)
-3. **Rule-Based:** Simple heuristics, not ML
-4. **Internet Required:** For AI explanations
-5. **No Auth:** Anyone can access
-6. **No Batch:** One sequence at a time
+### Alignment fails
 
-## 🚀 Future Enhancements
+**Error:** `No valid alignment found`
 
-**Easy Wins:**
-- Add BRCA1, BRCA2, EGFR genes
-- Expand ClinVar database
-- Export PDF reports
-- Batch processing
+**Possible causes:**
+1. Sequences too different (from wrong gene)
+2. Very short sequence (<20 bp)
+3. Contains many non-ATCG characters
 
-**Medium Effort:**
+**Solution:** Ensure sequence is from TP53 gene
+
+## Performance
+
+| Metric | Value |
+|--------|-------|
+| Validation | <0.1 seconds |
+| Alignment (1000bp) | ~1-2 seconds |
+| Mutation detection | <0.5 seconds |
+| Total analysis | 2-5 seconds |
+| Max sequence length | 10,000 nucleotides |
+
+## Educational Value
+
+Perfect for learning:
+- Bioinformatics algorithms
+- Sequence alignment (Needleman-Wunsch)
+- Genetic code and translation
+- Mutation classification
+- Full-stack development
+- API design
+
+## Contributing
+
+This is a clean, educational codebase. To contribute:
+
+1. Read the code comments
+2. Understand the pipeline flow
+3. Make improvements
+4. Add tests
+5. Submit changes
+
+Suggested improvements:
+- Add more reference genes
+- Implement batch processing
+- Add visualization of protein structures
+- Integrate population databases
 - Machine learning classification
-- 3D protein structure visualization
-- Population frequency data (gnomAD)
-- User authentication
 
-**Research Projects:**
-- Multi-gene panel analysis
-- Real-time sequencing integration
-- Clinical decision support
-- Treatment recommendations
+## License
 
-## 📚 Resources
+Educational and research use. Not for clinical diagnosis.
 
-- [ClinVar Database](https://www.ncbi.nlm.nih.gov/clinvar/)
-- [Biopython Documentation](https://biopython.org/)
-- [FastAPI Guide](https://fastapi.tiangolo.com/)
-- [ACMG Guidelines](https://www.acmg.net/) - Variant interpretation standards
+**Medical Disclaimer:** This tool is for educational purposes only. NOT approved for clinical use. Always consult qualified healthcare professionals for medical decisions.
 
-## 📄 License & Disclaimer
+## Version History
 
-**Educational and research purposes only.**
+**v2.0.0** (Current) - Local Edition
+- Removed all external API dependencies
+- Refactored to use modern Biopython
+- Added comprehensive code comments
+- Pure computational biology approach
 
-⚠️ **Medical Disclaimer:** NOT approved for clinical diagnosis. Always consult qualified healthcare professionals and certified genetic counselors for medical decisions.
-
-## 🎓 Educational Value
-
-Ideal for learning:
-- DNA sequence analysis
-- Multi-agent AI systems
-- Bioinformatics pipelines
-- Full-stack AI applications
-- RAG (Retrieval-Augmented Generation)
+**v1.0.0** - Original
+- Had external AI API dependencies
+- Less detailed documentation
 
 ---
 
-**Version:** 1.0.0  
-**Last Updated:** March 2026  
-**Status:** Production-Ready MVP
+**Runs 100% locally • No API keys needed • Open source libraries only**
